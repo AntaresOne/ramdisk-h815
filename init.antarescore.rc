@@ -1,0 +1,10 @@
+on post-fs-data
+    # Start init.d scripts
+    start sysinit
+
+# sysinit
+service sysinit /sbin/sysinit
+    user root
+    oneshot
+    seclabel u:r:init:s0
+    disabled

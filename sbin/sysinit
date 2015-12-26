@@ -1,0 +1,33 @@
+#!/sbin/ash
+#
+# In-kernel init.d support
+#
+# AntaresOne@XDA-Developers
+#
+export PATH=/sbin:/system/sbin:/system/bin:/system/xbin
+DATA_D=/data/local/init.d
+INIT_D=/system/etc/init.d
+SBIN=/sbin
+
+# If folder is not available, make it
+if [ ! -d $INIT_D ]; then
+    $SBIN/mount -o remount,rw /system
+    $SBIN/mkdir -p $INIT_D
+    $SBIN/chown 0:2000 $INIT_D
+    $SBIN/chmod 0755 $INIT_D
+    $SBIN/mount -o remount,ro /system
+    if [ ! -d $INIT_D ]; then
+	# Cannot write to /system, use /data instead
+	$SBIN/mkdir -p $DATA_D
+	$SBIN/chown 0:2000 $DATA_D
+	$SBIN/chmod 0755 $DATA_D
+    fi
+fi
+
+if [ -d $INIT_D ]; then
+    # Run scripts from /system/etc/init.d
+    $SBIN/run-parts $INIT_D
+else
+    # Run scripts from /data/local/init.d
+    $SBIN/run-parts $DATA_D
+fi

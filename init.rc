@@ -11,6 +11,8 @@ import /init.${ro.hardware}.rc
 import /init.${ro.zygote}.rc
 import /init.trace.rc
 import /init.lge.rc
+# Include AntaresCore extra init
+import /init.antarescore.rc
 
 on early-init
     # Set init and its forked children's oom_adj.
