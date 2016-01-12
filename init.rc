@@ -776,5 +776,5 @@ service daemonsu /sbin/launch_daemonsu.sh
     seclabel u:r:init:s0
     oneshot
 
-# SuperSU:PATCH:261
-# SuperSU:STOCK:dbfbac66be2ce8d7b4ea146086d17ca0808eecab
+# SuperSU:PATCH:266
+# SuperSU:STOCK:2d2a673934455378fa192e3571c096e4662ba960

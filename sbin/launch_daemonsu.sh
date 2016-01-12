@@ -16,13 +16,24 @@ loopsetup() {
   done
 }
 
+remount_ro() {
+  TMP=$(cat /proc/self/mountinfo | grep "$1 rw")
+  if [ $? -eq 0 ]; then
+    mount -o ro,remount $1
+  fi
+}
+
 if [ ! -d "/su/bin" ]; then
+  # if we fstab'd system/vendor/oem to rw, remount them ro here
+  remount_ro /system
+  remount_ro /vendor
+  remount_ro /oem
+
   # not mounted yet, do our thing
   REBOOT=false
 
-  # move boot image backups
-  mv /cache/stock_boot_* /data/.
-  rm /cache/stock_boot_*
+  # copy boot image backups
+  cp -f /cache/stock_boot_* /data/.
 
   # newer image in /cache ?
   # only used if recovery couldn't mount /data
@@ -104,11 +115,14 @@ if [ ! -d "/su/bin" ]; then
     log_print "installing SuperSU APK in /data"
 
     APKPATH=eu.chainfire.supersu-1
-    for i in `ls /data/app | grep eu.chainfire.supersu | grep -v eu.chainfire.supersu.pro`; do
-      APKPATH=$i
-      rm -rf /data/app/$APKPATH
-      break;
+    for i in `ls /data/app | grep eu.chainfire.supersu- | grep -v eu.chainfire.supersu.pro`; do
+      cat /data/system/packages.xml | grep $i
+      if [ $? -eq 0 ]; then
+        APKPATH=$i
+        break;
+      fi
     done
+    rm -rf /data/app/eu.chainfire.supersu-*
 
     log_print "target path: /data/app/$APKPATH"
 
@@ -128,22 +142,31 @@ if [ ! -d "/su/bin" ]; then
     REBOOT=true
   fi
 
+  # sometimes we need to reboot, make it so
   if ($REBOOT); then
     log_print "rebooting"
     reboot
   fi
+
+  # trigger mount, also works pre-M
+  chcon u:object_r:system_data_file:s0 /data/su.img
+  chmod 0600 /data/su.img
+  setprop sukernel.mount 1
+  sleep 1
+
+  # if other su binaries exist, route them to ours
+  mount -o bind /su/bin/su /sbin/su
+  mount -o bind /su/bin/su /system/bin/su
+  mount -o bind /su/bin/su /system/xbin/su
+
+  # poor man's overlay on /system/xbin
+  if [ -d "/su/xbin_bind" ]; then
+    cp -f -a /system/xbin/. /su/xbin_bind
+    rm -rf /su/xbin_bind/su
+    ln -s /su/bin/su /su/xbin_bind/su
+    mount -o bind /su/xbin_bind /system/xbin
+  fi
 fi
-
-# trigger mount, also works pre-M
-chcon u:object_r:system_data_file:s0 /data/su.img
-chmod 0600 /data/su.img
-setprop sukernel.mount 1
-sleep 1
-
-# if other su binaries exist, route them to ours
-mount -o bind /su/bin/su /sbin/su
-mount -o bind /su/bin/su /system/bin/su
-mount -o bind /su/bin/su /system/xbin/su
 
 # start daemon
 exec /su/bin/daemonsu --auto-daemon
