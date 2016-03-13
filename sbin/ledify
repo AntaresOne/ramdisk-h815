@@ -1,0 +1,192 @@
+#!/sbin/ash
+#
+# Copyright (c) 2015-2016, Mattia "AntaresOne" D'Alleva
+# Copyright (c) 2015-2016, JDCTeam
+#
+# JDCTeam presents LEDify!
+#
+# Funny script to control the notification LED at device boot. 
+#
+
+# Brightness
+BRG=echo #value
+
+# Color channel sysfs
+LED_B=/sys/class/leds/blue/brightness
+LED_G=/sys/class/leds/green/brightness
+LED_R=/sys/class/leds/red/brightness
+
+# LGE Emotional LED
+EMLED=/sys/devices/virtual/lg_rgb_led/use_patterns/setting
+RUNNING=0
+
+EXIT() {
+    if [ "$RUNNING" == "0" ]; then
+	# Reset channels if Emotional LED off
+	echo 0 | tee $LED_B $LED_G $LED_R
+    fi
+    exit 0
+}
+
+HEARTBEAT() {
+    # Set color channel
+    if [ "$HBCOLOR" == "blue" ]; then
+	LED=$LED_B
+    elif [ "$HBCOLOR" == "green" ]; then
+	LED=$LED_G
+    else
+        LED=$LED_R
+    fi
+    # Between each brightness value
+    SPD="sleep 0.01"
+    # Between a beat and the other
+    SPD2="sleep 0.02"
+    # Between end of two beats and start of another two
+    SPD3="sleep 1.5"
+    $BRG 30 > $LED | $SPD
+    $BRG 55 > $LED | $SPD
+    $BRG 80 > $LED | $SPD
+    $BRG 105 > $LED | $SPD
+    $BRG 130 > $LED | $SPD
+    $BRG 155 > $LED | $SPD
+    $BRG 180 > $LED | $SPD
+    $BRG 205 > $LED | $SPD
+    $BRG 230 > $LED | $SPD
+    $BRG 255 > $LED | $SPD
+    $BRG 230 > $LED | $SPD
+    $BRG 205 > $LED | $SPD
+    $BRG 180 > $LED | $SPD
+    $BRG 155 > $LED | $SPD
+    $BRG 130 > $LED | $SPD
+    $BRG 105 > $LED | $SPD
+    $BRG 80 > $LED | $SPD
+    $BRG 55 > $LED | $SPD
+    $BRG 30 > $LED | $SPD
+    $BRG 0 > $LED | $SPD
+    $SPD2
+    $BRG 30 > $LED | $SPD
+    $BRG 55 > $LED | $SPD
+    $BRG 80 > $LED | $SPD
+    $BRG 105 > $LED | $SPD
+    $BRG 130 > $LED | $SPD
+    $BRG 155 > $LED | $SPD
+    $BRG 180 > $LED | $SPD
+    $BRG 205 > $LED | $SPD
+    $BRG 230 > $LED | $SPD
+    $BRG 255 > $LED | $SPD
+    $BRG 230 > $LED | $SPD
+    $BRG 205 > $LED | $SPD
+    $BRG 180 > $LED | $SPD
+    $BRG 155 > $LED | $SPD
+    $BRG 130 > $LED | $SPD
+    $BRG 105 > $LED | $SPD
+    $BRG 80 > $LED | $SPD
+    $BRG 55 > $LED | $SPD
+    $BRG 30 > $LED | $SPD
+    $BRG 0 > $LED | $SPD
+    $SPD3
+}
+
+JDCDEF() {
+    if [ "$SPD" == "null" ]; then
+	SPD="sleep 0.10"
+    fi
+    # Red
+    $BRG 150 > $LED_R | $SPD
+    # Orange
+    $BRG 40 > $LED_G | $SPD
+    # Yellow
+    $BRG 150 > $LED_G | $SPD
+    # Green
+    $BRG 0 > $LED_R | $SPD
+    # Blue
+    $BRG 0 > $LED_G && $BRG 150 > $LED_B | $SPD
+    # Indigo
+    $BRG 10 > $LED_R | $SPD
+    # Violet
+    $BRG 150 > $LED_R | $SPD
+    ### Reverse ###
+    # Indigo
+    $BRG 10 > $LED_R | $SPD
+    # Blue
+    $BRG 0 | tee $LED_G $LED_R | $SPD
+    # Green
+    $BRG 0 > $LED_B && $BRG 150 > $LED_G | $SPD
+    # Yellow
+    $BRG 150 > $LED_R | $SPD
+    # Orange
+    $BRG 40 > $LED_G | $SPD
+    # Red
+    $BRG 0 | tee $LED_G $LED_R
+}
+
+NEXUS() {
+    if [ "$SPD" == "null" ]; then
+	SPD="sleep 0.20"
+    fi
+    if [ "$REVERSE" == "true" ]; then
+	$BRG 255 > $LED_B | $SPD
+	$BRG 0 > $LED_B && $BRG 255 | tee $LED_G $LED_R | $SPD
+	$BRG 0 > $LED_R | $SPD
+	$BRG 0 > $LED_G && $BRG 255 > $LED_R | $SPD
+    else
+	$BRG 255 > $LED_R | $SPD
+	$BRG 0 > $LED_R && $BRG 255 > $LED_G | $SPD
+	$BRG 255 > $LED_R | $SPD
+	$BRG 0 | tee $LED_G $LED_R && $BRG 255 > $LED_B | $SPD
+	$BRG 0 > $LED_B
+    fi
+}
+
+POLICE() {
+    if [ "$SPD" == "null" ]; then
+	SPD="sleep 0.30"
+    fi
+    $BRG 255 > $LED_B | $SPD
+    $BRG 0 > $LED_B && $BRG 255 > $LED_R | $SPD
+    $BRG 0 > $LED_R
+}
+
+LGE() {
+    if [ "$RUNNING" != "1" ]; then
+       $BRG 1 > $EMLED
+       RUNNING=1
+    fi   
+}
+
+RUN() {
+    case $PATTERN in
+    disabled) EXIT;;
+    heartbeatblue) HBCOLOR=blue; HEARTBEAT;;
+    heartbeatgreen) HBCOLOR=green; HEARTBEAT;;
+    heartbeatred) HEARTBEAT;;
+    jdcdefault) JDCDEF;;
+    nexus) NEXUS;;
+    nexusreverse) REVERSE=true; NEXUS;;
+    police) POLICE;;
+    lge) LGE;;
+    esac
+}
+
+LOOP() {
+    # Start a loop
+    while :; do
+	if [ `getprop sys.boot_completed` == "1" ]; then
+	    PATTERN=disabled
+	fi
+	RUN
+    done
+}
+
+# <=== Start ===>
+# LEDify app compatibility layer
+if [ -e /data/ledify_config ]; then
+    # Set user-chosen values, LEDify only
+    PATTERN=$(eval $(cat /data/ledify_config | grep -o "PATTERN[^/].*"); echo $PATTERN);
+    SPD=$(eval $(cat /data/ledify_config | grep -o "SPEED[^/].*"); echo $SPEED);
+else
+    # Default
+    PATTERN=jdcdefault
+    SPD=null # null applies default pattern-based speed values decided by us
+fi
+LOOP

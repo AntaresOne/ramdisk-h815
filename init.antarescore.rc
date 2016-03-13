@@ -2,6 +2,17 @@ on post-fs-data
     # Start init.d scripts
     start sysinit
 
+on boot
+    # Start LEDify
+    start ledify
+
+# LEDify
+service ledify /sbin/ledify
+    user root
+    oneshot
+    seclabel u:r:init:s0
+    disabled
+
 # sysinit
 service sysinit /sbin/sysinit
     user root

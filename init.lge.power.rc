@@ -71,15 +71,14 @@ on property:persist.sys.store_demo_enabled=0
 
 # emotional led
 on boot
-   chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/blink_patterns
-   chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/blink_patterns
-   chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/input_patterns
-   chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/input_patterns
-   chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/onoff_patterns
-   chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/onoff_patterns
-   chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/setting
-   chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/setting
-   write /sys/devices/virtual/lg_rgb_led/use_patterns/setting 1
+    chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/blink_patterns
+    chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/blink_patterns
+    chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/input_patterns
+    chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/input_patterns
+    chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/onoff_patterns
+    chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/onoff_patterns
+    chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/setting
+    chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/setting
 
 # pm debug mask enable(clock/resume irq)
 on boot
