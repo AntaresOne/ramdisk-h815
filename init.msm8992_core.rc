@@ -57,7 +57,9 @@ on post-fs-data
     chmod 0775 /mpt
 
 on boot
-    start set_emmc_size
+    # Set eMMC size 
+    setprop ro.device.memory.system 0
+    setprop ro.device.memory.internal 32
 
     symlink /dev/graphics/fb1 /dev/graphics/hdmi
 
@@ -78,22 +80,6 @@ on boot
     chmod 0664 /sys/devices/virtual/graphics/fb1/s3d_mode
     chmod 0664 /sys/devices/virtual/graphics/fb1/hdcp/tp
     chmod 0664 /sys/devices/virtual/graphics/fb1/pa
-
-on property:persist.sys.emmc_size=32G
-   setprop ro.device.memory.system 0
-   setprop ro.device.memory.internal 32
-
-on property:persist.sys.emmc_size=16G
-    setprop ro.device.memory.system 0
-    setprop ro.device.memory.internal 16
-
-# set eMMC size
-service set_emmc_size /system/bin/sh /set_emmc_size.sh
-    class main
-    user root
-    group media_rw system sdcard_rw
-    disabled
-    oneshot
 
 service atd /system/bin/atd /dev/ttyGS0 /dev/smd0
     socket atd stream 0660 system inet
