@@ -323,13 +323,6 @@ on property:sys.boot_completed=1
 on run-wallpaper
     exec u:r:wallpaper:s0 -- /sbin/wallpaper
 
-# LG RCT(Rooting Check Tool)
-service rctd /sbin/rctd
-    class late_start
-    user root
-    group root
-    seclabel u:r:rctd:s0
-
 service ccmd /system/bin/ccmd
     class core
     user system
