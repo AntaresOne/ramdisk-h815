@@ -554,6 +554,11 @@ service logd-reinit /system/bin/logd --reinit
     oneshot
     disabled
 
+# LOGD control
+on property:persist.sys.logd=0
+    stop logd
+    stop logd-reinit
+
 service healthd /sbin/healthd
     class core
     critical

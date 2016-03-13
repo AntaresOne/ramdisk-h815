@@ -240,7 +240,9 @@ chmod -h 220 /sys/devices/platform/msm_hsusb/gadget/wakeup
 setprop persist.sys.usb.config diag,adb
 
 # Start the following services needed for fftm
+if [ `getprop persist.sys.logd` != "0" ]; then
     start logd
+fi
     start config_bluetooth
     start media
     start fastmmi
