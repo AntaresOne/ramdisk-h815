@@ -3,9 +3,6 @@
 # to override this file (device specific .rc)
 import /init.${ro.hardware}_core.rc
 
-# FM Framework
-import /init.fm_vendor.rc
-
 on init
     # Mount pstore file system on /mnt/pstore
     mkdir /dev/pstore 660 system system
@@ -57,6 +54,9 @@ on post-fs-data
     chmod 0775 /mpt
 
 on boot
+    # FM Framework
+    setprop ro.fm.module BCM
+
     # Set eMMC size 
     setprop ro.device.memory.system 0
     setprop ro.device.memory.internal 32

@@ -399,11 +399,6 @@ on property:bluetooth.startbtsnoop=true
 on property:bluetooth.startbtsnoop=false
     stop btsnoop
 
-service qcom-c_core-sh /system/bin/sh /init.qcom.class_core.sh
-    class core
-    user root
-    oneshot
-
 service qcom-c_main-sh /system/bin/sh /init.class_main.sh
     class main
     user root
@@ -820,11 +815,6 @@ on property:ro.data.large_tcp_window_size=true
     write /proc/sys/net/ipv4/tcp_adv_win_scale  1
 # LGP_DATA_PERFORMANCE_HELPING_CODE, y01.jeong@lge.com
 
-service battery_monitor /system/bin/battery_monitor
-    user system
-    group system
-    disabled
-
 # Add rild socket permission for dual SIM sanghwan.jung@lge.com
 service ril-daemon2 /system/bin/rild -c 2
     class main
@@ -860,13 +850,6 @@ on property:sys.usb_uicc.enabled=1
 
 on property:sys.usb_uicc.enabled=0
     start usb_uicc_enable
-
-service profiler_daemon /system/bin/profiler_daemon
-    class late_start
-    user root
-    group root
-    disabled
-
 
 # TODO: This MUST be changed to main in LGE platform (SEC_DEVENC).
 # This will make sure that sdcard service starts as late_start.
@@ -927,11 +910,6 @@ on property:persist.usb.hvdcp.detect=true
 on property:persist.usb.hvdcp.detect=false
     stop hvdcp
 
-service charger_monitor /system/bin/charger_monitor
-    user root
-    group root
-    disabled
-
 service qbcharger /charger -m 1
     disabled
     oneshot
@@ -964,11 +942,6 @@ on property:persist.sys.qlogd=1
     start qlogd
 on property:persist.sys.qlogd=0
     stop qlogd
-
-service vm_bms /system/bin/vm_bms
-    user root
-    group root
-    disabled
 
 service msm_irqbalance /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
     socket msm_irqbalance seqpacket 660 root system
