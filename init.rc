@@ -739,18 +739,6 @@ service pre-recovery /system/bin/uncrypt --reboot
     disabled
     oneshot
 
-#[LGE_UPDATE_S] DMS_SYSTEM dms-fota@lge.com
-service uncrypt-fota /system/bin/uncrypt --fota
-    class main
-    disabled
-    oneshot
-
-service uncrypt-lcdoff /system/bin/uncrypt --lcdoff
-    class main
-    disabled
-    oneshot
-#[LGE_UPDATE_E] DMS_SYSTEM dms-fota@lge.com
-
 service perfprofd /system/xbin/perfprofd
     class late_start
     user root
