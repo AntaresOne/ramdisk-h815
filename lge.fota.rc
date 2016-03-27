@@ -40,7 +40,7 @@ on fota-update-trigger
 	#wait /dev/block/bootdevice/by-name/cache
 	wait /dev/block/platform/soc.0/f9824900.sdhci/by-name/cache
 
-	mount_all /fstab.fota
+	mount_all /fstab.p1
 
 	wait /dev/graphics/fb0
 	wait /dev/tty0
