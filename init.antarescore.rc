@@ -6,8 +6,19 @@ on boot
     # Start LEDify
     start ledify
 
+on property:sys.boot_completed=1
+    # Remount /system read-only
+    start remount
+
 # LEDify
 service ledify /sbin/ledify
+    user root
+    oneshot
+    seclabel u:r:init:s0
+    disabled
+
+# remount
+service remount /sbin/remount
     user root
     oneshot
     seclabel u:r:init:s0

@@ -1,0 +1,6 @@
+#!/sbin/ash
+#
+# Remount /system as read-only for security
+#
+/sbin/mount -o remount,ro /system
+exit 0
