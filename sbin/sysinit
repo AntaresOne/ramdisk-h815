@@ -4,7 +4,6 @@
 #
 # AntaresOne@XDA-Developers
 #
-export PATH=/sbin:/system/sbin:/system/bin:/system/xbin
 DATA_D=/data/local/init.d
 INIT_D=/system/etc/init.d
 SBIN=/sbin
