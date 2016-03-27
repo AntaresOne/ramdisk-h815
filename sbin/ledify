@@ -186,7 +186,7 @@ if [ -e /data/ledify_config ]; then
     SPD=$(eval $(cat /data/ledify_config | grep -o "SPEED[^/].*"); echo $SPEED);
 else
     # Default
-    PATTERN=jdcdefault
-    SPD=null # null applies default pattern-based speed values decided by us
+    PATTERN=lge
+    SPD=null # null applies default pattern-based speed [SPD parameter not valid for lge pattern]
 fi
 LOOP
